@@ -1,0 +1,784 @@
+<!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>GALERI BUSANA - Sistem Manajemen Toko</title><style>
+:root{--n:#071a38;--g:#d9ad45;--bg:#f4f6f9}*{box-sizing:border-box}body{margin:0;font-family:Tahoma,Arial;background:var(--bg);color:#172033}button,input,select{font:inherit}button{cursor:pointer}.login{min-height:100vh;display:grid;place-items:center;background:linear-gradient(135deg,#06152e,#123765)}.login>div{background:white;padding:35px;border:2px solid var(--g);border-radius:20px;width:min(420px,92%);text-align:center}.logo{font-size:32px;font-weight:900;color:var(--g)}.role{display:block;width:100%;margin:9px 0;padding:13px;border:1px solid var(--g);border-radius:10px;background:#fffaf0;font-weight:bold;color:var(--n)}.app{display:none}.side{position:fixed;inset:0 auto 0 0;width:235px;background:var(--n);color:white;padding:20px}.brand{font-size:25px;color:#f2cf78;font-weight:bold;margin-bottom:20px}.nav button{display:block;width:100%;padding:12px;margin:4px 0;border:0;border-radius:9px;background:transparent;color:white;text-align:left}.nav button:hover,.nav .on{background:#ffffff18;color:#f2cf78}.main{margin-left:235px}.top{height:65px;background:#fff;border-bottom:1px solid #ddd;padding:15px 25px;display:flex;justify-content:space-between}.content{padding:24px}.page{display:none}.page.on{display:block}.title{font-size:27px;font-weight:bold;color:var(--n)}.sub{color:#687080;margin:5px 0 20px}.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.card,.panel{background:white;border:1px solid #e4e6ea;border-radius:14px;padding:17px}.metric{font-size:25px;font-weight:bold;color:var(--n);margin-top:7px}.gold{color:#a27615}.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}.form{display:grid;grid-template-columns:1fr 1fr;gap:12px}.full{grid-column:1/-1}label{font-size:13px;font-weight:bold;color:#4b5563}input,select{width:100%;padding:10px;margin-top:5px;border:1px solid #d7dbe2;border-radius:8px}.btn{border:0;border-radius:8px;padding:10px 13px;font-weight:bold}.primary{background:var(--n);color:white}.goldbtn{background:var(--g);color:white}.light{background:#eef1f5}.danger{background:#fee2e2;color:#991b1b}table{width:100%;border-collapse:collapse;font-size:13px}th,td{padding:10px;border-bottom:1px solid #e6e8ed;text-align:left}th{background:#fafafa;color:var(--n)}.products{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.product{background:#fff;border:1px solid #e1e4e8;border-radius:12px;padding:13px}.price{font-weight:bold;color:#a27615;margin:7px 0}.pos{display:grid;grid-template-columns:1.4fr .8fr;gap:16px}.cart{background:white;padding:17px;border-radius:14px;border:1px solid #ddd}.cartrow{padding:10px 0;border-bottom:1px solid #eee;display:flex;justify-content:space-between}.total{font-size:23px;font-weight:bold;display:flex;justify-content:space-between;margin:18px 0}@media(max-width:900px){.cards{grid-template-columns:1fr 1fr}.products{grid-template-columns:1fr 1fr}.pos,.grid{grid-template-columns:1fr}}@media(max-width:650px){.side{position:static;width:100%}.main{margin:0}.nav{display:flex;overflow:auto}.nav button{min-width:max-content}.cards,.products,.form{grid-template-columns:1fr}.content{padding:14px}}
+
+/* GALERI BUSANA mobile improvements */
+html{-webkit-text-size-adjust:100%}
+button{min-height:42px;touch-action:manipulation}
+input,select{min-height:42px;font-size:16px}
+table{display:block;overflow-x:auto;white-space:nowrap}
+@media(max-width:650px){
+.login>div{padding:24px 18px}.logo{font-size:27px}
+.side{padding:12px;position:static;width:100%}.brand{font-size:22px;margin-bottom:8px}
+.nav{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px}
+.nav button{min-width:max-content;width:auto;margin:0;padding:11px 13px}
+.top{height:auto;min-height:58px;padding:12px;gap:8px;align-items:center}
+.content{padding:12px}.title{font-size:23px}
+.cards{grid-template-columns:1fr 1fr;gap:8px}.card,.panel,.cart{padding:12px}
+.metric{font-size:21px}.products{grid-template-columns:1fr 1fr;gap:8px}.product{padding:10px}
+.pos,.grid{grid-template-columns:1fr}.form{grid-template-columns:1fr}.full{grid-column:auto}
+.paymentbox .payrow{grid-template-columns:1fr}.change-display .amount{font-size:26px}
+.reporttools{display:grid;grid-template-columns:1fr}.reporttools label{min-width:0}.sign{padding-right:8px}
+}
+@media(max-width:380px){.cards,.products{grid-template-columns:1fr}}
+</style><script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script><style>.reportbox{background:#fff;border:1px solid #ddd;border-radius:14px;padding:18px;margin-top:16px}.reporttools{display:flex;gap:10px;flex-wrap:wrap;align-items:end}.reporttools label{min-width:170px}.reporttools button{margin-top:5px}.sign{margin-top:55px;text-align:right;padding-right:50px}.signspace{height:70px}</style>
+<style>
+.paymentbox{margin-top:16px;padding:16px;border:2px solid #d9ad45;border-radius:14px;background:#fffaf0}
+.paymentbox .payrow{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.change-display{margin-top:12px;padding:16px;border-radius:12px;background:#071a38;color:white;text-align:center}
+.change-display .label{font-size:14px;opacity:.9}
+.change-display .amount{font-size:30px;font-weight:900;color:#f2cf78;margin-top:5px}
+.change-display.insufficient{background:#991b1b}
+.change-display.insufficient .amount{color:#fff}
+.receiptbox{margin-top:12px;padding:14px;border:1px dashed #aaa;border-radius:10px;background:#fff}
+@media(max-width:650px){.paymentbox .payrow{grid-template-columns:1fr}}
+</style>
+
+<style id="receipt-print-styles">
+.receipt-actions{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}
+.receipt-paper{background:#fff;border:1px dashed #b8b8b8;border-radius:10px;padding:22px;max-width:760px;margin:16px auto;color:#111;font-family:Tahoma,Arial,sans-serif}
+.receipt-paper h2{text-align:center;margin:0 0 4px;font-size:22px;letter-spacing:1px}
+.receipt-paper .receipt-center{text-align:center}
+.receipt-paper .receipt-line{border-top:1px dashed #777;margin:12px 0}
+.receipt-paper table{width:100%;border-collapse:collapse;white-space:normal}
+.receipt-paper th,.receipt-paper td{padding:6px 3px;border-bottom:1px dotted #ddd;font-size:13px;background:#fff;color:#111}
+.receipt-paper th{font-weight:bold}
+.receipt-paper .receipt-total{display:flex;justify-content:space-between;gap:12px;padding:4px 0}
+.receipt-paper .receipt-grand{font-size:17px;font-weight:900}
+.receipt-paper .receipt-change{font-size:19px;font-weight:900;border:1px solid #111;padding:9px;margin-top:7px}
+@media print{
+ @page{size:letter portrait;margin:12mm}
+ body.receipt-printing *{visibility:hidden!important}
+ body.receipt-printing #receiptPrint,
+ body.receipt-printing #receiptPrint *{visibility:visible!important}
+ body.receipt-printing #receiptPrint{display:block!important;position:absolute;left:0;top:0;width:100%;max-width:none;margin:0;padding:0;border:0;border-radius:0}
+ body.receipt-printing #receiptPrint .receipt-actions{display:none!important}
+ body.receipt-printing #receiptPrint table{display:table!important;overflow:visible!important;white-space:normal!important}
+ body.receipt-printing #receiptPrint tr{break-inside:avoid}
+}
+</style>
+
+</head><body>
+<div id="login" class="login"><div>
+<div class="logo">GALERI BUSANA</div>
+<p>Sistem Manajemen Toko Busana</p>
+<h3>Login Pengguna</h3>
+<form onsubmit="login(event)">
+<label style="display:block;text-align:left;margin:8px 0">Username
+<input id="username" required autocomplete="username" placeholder="Masukkan username"></label>
+<label style="display:block;text-align:left;margin:8px 0">Password
+<input id="password" type="password" required autocomplete="current-password" placeholder="Masukkan password"></label>
+<button class="role" type="submit">🔐 MASUK</button>
+</form>
+<small>Hak akses: OWNER, KASIR, dan GUDANG.</small>
+<div style="margin-top:12px;padding:10px;border-radius:8px;background:#f4f6f9;font-size:12px;text-align:left;line-height:1.7">
+<b>Akun awal untuk uji coba:</b><br>
+Owner: <b>owner</b> / <b>owner123</b><br>
+Kasir: <b>kasir</b> / <b>kasir123</b><br>
+Gudang: <b>gudang</b> / <b>gudang123</b><br>
+Ganti password setelah masuk.
+</div>
+</div></div>
+<div id="app" class="app"><aside class="side"><div class="brand">GALERI BUSANA</div><div id="nav" class="nav"></div></aside><main class="main"><div class="top"><b id="pt">Dashboard</b><span><b id="role"></b> <button class="btn light" onclick="logout()">Keluar</button></span></div><div class="content"><section id="dashboard" class="page"></section><section id="produk" class="page"></section><section id="kasir" class="page"></section><section id="produksi" class="page"></section><section id="stok" class="page"></section><section id="laporan" class="page"></section><section id="akun" class="page"></section></div></main></div>
+<script>
+const K='galeri_busana_tms_v1';const DEFAULT_USERS=[
+{id:'owner',username:'owner',name:'Yulita Eka Amalia',role:'owner',password:'owner123',active:true},
+{id:'kasir',username:'kasir',name:'Siswi',role:'kasir',password:'kasir123',active:true},
+{id:'gudang',username:'gudang',name:'Siswi Gudang',role:'gudang',password:'gudang123',active:true}];
+let db=JSON.parse(localStorage.getItem(K)||'null')||{role:null,user:null,users:DEFAULT_USERS,products:[{id:1,code:'KJ-001',name:'Kerudung Segi Empat',cat:'Kerudung',color:'Hitam',size:'110 x 110 cm',cost:15000,price:25000,stock:20,min:5},{id:2,code:'KJ-002',name:'Kerudung Segi Empat',cat:'Kerudung',color:'Navy',size:'110 x 110 cm',cost:15000,price:25000,stock:15,min:5},{id:3,code:'KJ-003',name:'Kerudung Segi Empat',cat:'Kerudung',color:'Dusty Pink',size:'110 x 110 cm',cost:15000,price:25000,stock:12,min:5},{id:4,code:'KJ-004',name:'Kerudung Segi Empat',cat:'Kerudung',color:'Mocca',size:'110 x 110 cm',cost:15000,price:25000,stock:10,min:5},{id:5,code:'MK-001',name:'Mukena Muslimah',cat:'Mukena',color:'Putih',size:'All Size',cost:50000,price:75000,stock:8,min:3}],sales:[],prod:[]};
+let cart=[];let lastReceipt=null;const save=()=>localStorage.setItem(K,JSON.stringify(db)),rp=n=>new Intl.NumberFormat('id-ID',{style:'currency',currency:'IDR',maximumFractionDigits:0}).format(n||0);
+const formatAngka=n=>new Intl.NumberFormat('id-ID',{maximumFractionDigits:0}).format(Math.max(0,Number(n)||0));
+const angkaDariInput=el=>Number(String(el?.value||'').replace(/[^0-9]/g,''))||0;
+function formatInputUang(el){const digits=String(el.value||'').replace(/[^0-9]/g,'');el.value=digits?formatAngka(Number(digits)):'';hitungKembalian();}
+if(!db.users){db.users=DEFAULT_USERS.map(x=>({...x}));save();}
+else { db.users=db.users.map(u=>({...u,username:u.username||u.id,active:u.active!==false})); save(); }
+function login(e){
+ e.preventDefault();
+ const u=document.getElementById('username').value.trim(), p=document.getElementById('password').value;
+ const user=db.users.find(x=>x.username===u && x.password===p && x.active!==false);
+ if(!user){alert('Username atau password salah, atau akun tidak aktif.');return}
+ db.role=user.role; db.user={id:user.id,name:user.name,username:user.username,role:user.role}; save();
+ document.getElementById('login').style.display='none';document.getElementById('app').style.display='block';
+ document.getElementById('role').textContent=user.name+' • '+user.role.toUpperCase();nav();go('dashboard')
+}
+function logout(){db.role=null;db.user=null;cart=[];save();location.reload()}
+function nav(){
+ let a=db.role==='owner'
+ ?[['dashboard','📊 Dashboard'],['produk','🏷️ Produk & Harga'],['kasir','👩‍💼 Penjualan'],['produksi','🧵 Produksi'],['stok','📦 Stok'],['laporan','📈 Laporan'],['akun','⚙️ Kelola Akun']]
+ :db.role==='kasir'
+ ?[['dashboard','📊 Dashboard'],['kasir','🛒 Kasir'],['laporan','📄 Laporan Saya'],['akun','⚙️ Akun Saya']]
+ :[['dashboard','📊 Dashboard'],['produk','🏷️ Produk & Harga'],['produksi','🧵 Produksi'],['stok','📦 Stok'],['akun','⚙️ Akun Saya']];
+ document.getElementById('nav').innerHTML=a.map(x=>`<button onclick="go('${x[0]}')">${x[1]}</button>`).join('')
+}
+function allowed(id){
+ return db.role==='owner' || (db.role==='kasir' && ['dashboard','kasir','laporan'].includes(id)) || (db.role==='gudang' && ['dashboard','produk','produksi','stok'].includes(id)) || (['kasir','gudang'].includes(db.role) && id==='akun');
+}
+function go(id){
+ if(!allowed(id)){alert('Akses ditolak: halaman ini bukan bagian dari akun Anda.');return}
+ document.querySelectorAll('.page').forEach(x=>x.classList.remove('on'));
+ document.getElementById(id).classList.add('on');
+ document.getElementById('pt').textContent=id[0].toUpperCase()+id.slice(1);
+ render(id)
+}function render(id){({dashboard:dash,produk:produk,kasir:kasir,produksi:produksi,stok:stok,laporan:laporan,akun:akun}[id])()}
+function akun(){
+ let isOwner=db.role==='owner';
+ const rows=isOwner?db.users.map(u=>`<tr><td>${u.name}</td><td>${u.username}</td><td>${u.role.toUpperCase()}</td><td>${u.active!==false?'🟢 Aktif':'🔴 Nonaktif'}</td><td><button class="btn light" onclick="editUser('${u.id}')">✏️ Edit</button> <button class="btn danger" onclick="toggleUser('${u.id}')">${u.active!==false?'Nonaktifkan':'Aktifkan'}</button> ${u.role==='kasir'?`<button class="btn danger" onclick="deleteCashierUser('${u.id}')">🗑️ Hapus Akun Kasir</button>`:u.role==='gudang'?`<button class="btn danger" onclick="deleteWarehouseUser('${u.id}')">🗑️ Hapus Akun Gudang</button>`:''}</td></tr>`).join(''):
+ `<tr><td>${db.user.name}</td><td>${db.user.username||db.user.id}</td><td>${db.user.role.toUpperCase()}</td><td>🟢 Aktif</td><td><button class="btn light" onclick="editUser('${db.user.id}')">✏️ Ubah</button></td></tr>`;
+ document.getElementById('akun').innerHTML=`<div class=title>${isOwner?'Kelola Akun':'Akun Saya'}</div><div class=sub>${isOwner?'OWNER dapat mengubah username, nama, password, role, serta status akun.':'Anda dapat mengubah username, nama, dan password akun Anda sendiri.'}</div><div class=panel><table><tr><th>Nama</th><th>Username</th><th>Role</th><th>Status</th><th>Aksi</th></tr>${rows}</table></div>${isOwner?`<div class=panel style="margin-top:16px"><h3>➕ Tambah Akun</h3><form class=form onsubmit="addUser(event)"><label>Nama Lengkap<input name=name required></label><label>Username<input name=username required></label><label>Password<input name=password type=password required minlength=4></label><label>Role<select name=role><option value=kasir>KASIR</option><option value=gudang>PRODUKSI/GUDANG</option><option value=owner>OWNER</option></select></label><button class="btn goldbtn">💾 Tambah Akun</button></form></div>`:''}`;
+}
+function editUser(id){
+ const u=db.users.find(x=>x.id===id); if(!u)return;
+ if(db.role!=='owner' && id!==db.user.id){return alert('Anda hanya dapat mengubah akun sendiri.')}
+ const name=prompt('Nama pengguna:',u.name); if(name===null)return;
+ const username=prompt('Username:',u.username||u.id); if(username===null)return;
+ if(db.users.some(x=>x.id!==id && x.username.toLowerCase()===username.trim().toLowerCase()))return alert('Username sudah digunakan.');
+ const password=prompt('Password baru (kosong = tidak diubah):',''); if(password===null)return;
+ u.name=name.trim()||u.name;u.username=username.trim();if(password.trim())u.password=password.trim();
+ if(db.user.id===id){db.user.name=u.name;db.user.username=u.username;db.role=u.role;}
+ save();document.getElementById('role').textContent=db.user.name+' • '+db.role.toUpperCase();akun();alert('Data akun berhasil diperbarui.');
+}
+function addUser(e){e.preventDefault();if(db.role!=='owner')return;let f=new FormData(e.target),username=f.get('username').trim();if(db.users.some(x=>x.username.toLowerCase()===username.toLowerCase()))return alert('Username sudah digunakan.');db.users.push({id:'u'+Date.now(),name:f.get('name').trim(),username,password:f.get('password'),role:f.get('role'),active:true});save();akun();alert('Akun berhasil dibuat.');}
+function toggleUser(id){if(db.role!=='owner')return; if(id===db.user.id)return alert('Akun OWNER yang sedang digunakan tidak dapat dinonaktifkan.');let u=db.users.find(x=>x.id===id);if(!u)return;u.active=u.active===false;save();akun();}
+function deleteCashierUser(id){
+ if(db.role!=='owner')return alert('Hanya Owner yang dapat menghapus akun kasir.');
+ const u=db.users.find(x=>x.id===id);
+ if(!u)return alert('Akun tidak ditemukan.');
+ if(u.role!=='kasir')return alert('Fitur ini hanya untuk menghapus akun dengan peran KASIR.');
+ if(id===db.user?.id)return alert('Akun yang sedang digunakan tidak dapat dihapus.');
+ const ok=confirm('Hapus akun kasir ini?\n\nNama: '+u.name+'\nUsername: '+u.username+'\n\nAkun tidak bisa digunakan untuk login lagi. Riwayat transaksi lama tetap disimpan.');
+ if(!ok)return;
+ db.users=db.users.filter(x=>x.id!==id);
+ save();akun();alert('Akun kasir berhasil dihapus. Riwayat transaksi lama tetap tersimpan.');
+}
+
+function deleteWarehouseUser(id){
+ if(db.role!=='owner')return alert('Hanya Owner yang dapat menghapus akun gudang.');
+ const u=db.users.find(x=>x.id===id);
+ if(!u)return alert('Akun tidak ditemukan.');
+ if(u.role!=='gudang')return alert('Fitur ini hanya untuk menghapus akun dengan peran GUDANG.');
+ if(id===db.user?.id)return alert('Akun yang sedang digunakan tidak dapat dihapus.');
+ const ok=confirm('Hapus akun gudang ini?\n\nNama: '+u.name+'\nUsername: '+u.username+'\n\nAkun tidak bisa digunakan untuk login lagi. Riwayat transaksi dan data produk tetap disimpan.');
+ if(!ok)return;
+ db.users=db.users.filter(x=>x.id!==id);
+ save();akun();alert('Akun gudang berhasil dihapus. Data produk dan riwayat transaksi tetap tersimpan.');
+}
+
+function dash(){
+ let om=db.sales.reduce((a,x)=>a+x.total,0),low=db.products.filter(p=>p.stock<=p.min).length;
+ let title=db.role==='owner'?'Dashboard OWNER':db.role==='kasir'?'Dashboard KASIR':'Dashboard PRODUKSI / GUDANG';
+ let cards=db.role==='owner'
+ ? `<div class=cards><div class=card>Omzet<div class="metric gold">${rp(om)}</div></div><div class=card>Transaksi<div class="metric">${db.sales.length}</div></div><div class=card>Produk<div class="metric">${db.products.length}</div></div><div class=card>Stok Menipis<div class="metric">${low}</div></div></div>`
+ : db.role==='kasir'
+ ? `<div class=cards><div class=card>Transaksi Saya<div class="metric">${db.sales.filter(x=>x.kasir===db.user.id).length}</div></div><div class=card>Produk Tersedia<div class="metric">${db.products.length}</div></div></div>`
+ : `<div class=cards><div class=card>Total Produk<div class="metric">${db.products.length}</div></div><div class=card>Stok Menipis<div class="metric">${low}</div></div></div>`;
+ document.getElementById('dashboard').innerHTML=`<div class=title>${title}</div><div class=sub>Selamat datang, ${db.user?.name||''}. Anda hanya dapat mengakses menu sesuai akun.</div>${cards}<div class=grid><div class=panel><h3>Stok Menipis</h3>${db.products.filter(p=>p.stock<=p.min).map(p=>`<p>${p.name} - ${p.color}: <b>${p.stock}</b></p>`).join('')||'Semua stok aman.'}</div><div class=panel><h3>${db.role==='owner'?'Transaksi Terakhir':'Informasi'}</h3>${db.role==='owner'?db.sales.slice(-5).reverse().map(s=>`<p>${s.invoice} • ${s.product} • ${rp(s.total)}</p>`).join(''):'Gunakan menu yang tersedia di sisi kiri.'}</div></div>`
+}
+function produk(){
+  const canManage=db.role==='owner'||db.role==='gudang';
+  const isOwner=db.role==='owner';
+  document.getElementById('produk').innerHTML=`<div class=title>Produk & Harga</div>
+  <div class=sub>${isOwner?'Owner dapat mengelola seluruh data produk.':'Akun Gudang dapat menambahkan produk baru dan meralat seluruh data produk. Penghapusan produk tetap khusus Owner.'}</div>
+  ${canManage?`<div class=panel><h3>➕ Tambah Produk Baru</h3><form class=form onsubmit="addP(event)">
+    <label>Kode Barang<input name=code required></label>
+    <label>Nama Barang<input name=name required></label>
+    <label>Kategori<input name=cat required placeholder="Kerudung/Mukena/Sajadah/Abaya"></label>
+    <label>Warna<input name=color></label>
+    <label>Ukuran<input name=size></label>
+    <label>Harga Modal (Rp)<input name=cost type=number min=0 step=1 required></label>
+    <label>Harga Jual (Rp)<input name=price type=number min=0 step=1 required></label>
+    <label>Stok Awal<input name=stock type=number min=0 step=1 required></label>
+    <label>Stok Minimum<input name=min type=number min=0 step=1 value=5 required></label>
+    <button class="btn goldbtn">💾 Simpan Produk</button>
+  </form></div>`:''}
+  <div class=panel style="margin-top:16px"><h3>Daftar Produk</h3><table><tr><th>Kode</th><th>Produk</th><th>Kategori</th><th>Warna</th><th>Ukuran</th><th>Harga Modal</th><th>Harga Jual</th><th>Stok</th><th>Minimum</th><th>Aksi</th></tr>
+  ${db.products.map(p=>`<tr><td>${p.code}</td><td>${p.name}</td><td>${p.cat||'-'}</td><td>${p.color||'-'}</td><td>${p.size||'-'}</td><td>${rp(p.cost)}</td><td>${rp(p.price)}</td><td>${p.stock}</td><td>${p.min??5}</td><td>${canManage?`<button class="btn goldbtn" onclick="editProduct('${p.id}')">✏️ Ralat Data Produk</button>`:''} ${isOwner?`<button class="btn light" onclick="ubahHarga('${p.id}')">Ubah Harga</button> <button class="btn primary" onclick="ubahJumlah('${p.id}')">📦 Ubah Stok</button> <button class="btn danger" onclick="delP('${p.id}')">🗑️ Hapus</button>`:''}</td></tr>`).join('')}</table></div>`;
+}
+function addP(e){
+  e.preventDefault();
+  if(!['owner','gudang'].includes(db.role))return alert('Akses ditolak.');
+  let f=new FormData(e.target);
+  const code=String(f.get('code')||'').trim();
+  if(db.products.some(p=>String(p.code||'').toLowerCase()===code.toLowerCase()))return alert('Kode barang sudah digunakan. Gunakan kode yang berbeda.');
+  const name=String(f.get('name')||'').trim();
+  const cost=Number(f.get('cost')),price=Number(f.get('price')),stock=Number(f.get('stock')),min=Number(f.get('min'));
+  if(!name||![cost,price,stock,min].every(Number.isFinite)||[cost,price,stock,min].some(n=>n<0)||![stock,min].every(Number.isSafeInteger))return alert('Periksa kembali harga dan jumlah. Harga tidak boleh negatif; stok harus bilangan bulat 0 atau lebih.');
+  db.products.push({id:Date.now(),code,name,cat:String(f.get('cat')||'').trim(),color:String(f.get('color')||'').trim(),size:String(f.get('size')||'').trim(),cost,price,stock,min});
+  save();produk();alert('Produk berhasil disimpan.');
+}
+function editProduct(id){
+  if(!['owner','gudang'].includes(db.role))return alert('Akses ditolak.');
+  const p=db.products.find(x=>String(x.id)===String(id));if(!p)return alert('Produk tidak ditemukan.');
+  const ask=(label,current)=>prompt(label,current==null?'':String(current));
+  const code=ask('Kode barang:',p.code);if(code===null)return;
+  const name=ask('Nama barang:',p.name);if(name===null)return;
+  const cat=ask('Kategori:',p.cat||'');if(cat===null)return;
+  const color=ask('Warna:',p.color||'');if(color===null)return;
+  const size=ask('Ukuran:',p.size||'');if(size===null)return;
+  const costText=ask('Harga modal (Rp):',p.cost??0);if(costText===null)return;
+  const priceText=ask('Harga jual (Rp):',p.price??0);if(priceText===null)return;
+  const stockText=ask('Jumlah stok:',p.stock??0);if(stockText===null)return;
+  const minText=ask('Stok minimum:',p.min??5);if(minText===null)return;
+  const cleanCode=code.trim(),cleanName=name.trim();
+  if(!cleanCode||!cleanName)return alert('Kode barang dan nama barang wajib diisi.');
+  if(db.products.some(x=>String(x.id)!==String(p.id)&&String(x.code||'').toLowerCase()===cleanCode.toLowerCase()))return alert('Kode barang sudah dipakai produk lain.');
+  const cost=Number(costText),price=Number(priceText),stock=Number(stockText),min=Number(minText);
+  if(![cost,price,stock,min].every(Number.isFinite)||[cost,price,stock,min].some(n=>n<0)||![stock,min].every(Number.isSafeInteger))return alert('Harga harus 0 atau lebih dan stok harus bilangan bulat 0 atau lebih. Data belum diubah.');
+  const ok=confirm('Simpan ralat data produk berikut?\n\nKode: '+p.code+' → '+cleanCode+'\nNama: '+p.name+' → '+cleanName+'\nHarga modal: '+rp(p.cost)+' → '+rp(cost)+'\nHarga jual: '+rp(p.price)+' → '+rp(price)+'\nStok: '+p.stock+' → '+stock);
+  if(!ok)return;
+  Object.assign(p,{code:cleanCode,name:cleanName,cat:cat.trim(),color:color.trim(),size:size.trim(),cost,price,stock,min});
+  save();produk();if(typeof stok==='function')stok();if(typeof kasir==='function')kasir();
+  alert('Data produk berhasil diralat dan disimpan.');
+}
+function ubahHarga(id){
+ if(db.role!=='owner')return alert('Hanya Owner yang dapat mengubah harga.');
+ const p=db.products.find(x=>String(x.id)===String(id)); if(!p)return;
+ const harga=prompt('Harga jual baru untuk '+p.name+' - '+(p.color||'')+'\nKode: '+p.code+'\nHarga saat ini: '+rp(p.price)+'\n\nMasukkan harga jual baru (Rp):',String(p.price));
+ if(harga===null)return;
+ const nilai=Number(String(harga).replace(/[^0-9,.-]/g,'').replace(/\./g,'').replace(',','.'));
+ if(!Number.isFinite(nilai)||nilai<0)return alert('Harga tidak valid. Masukkan angka 0 atau lebih.');
+ const lama=p.price;p.price=Math.round(nilai);save();produk();
+ alert('Harga berhasil diubah.\nProduk: '+p.name+' - '+(p.color||'')+'\nHarga lama: '+rp(lama)+'\nHarga baru: '+rp(p.price)+'\n\nData produk dan stok tidak dihapus atau diubah.');
+}
+function ubahJumlah(id){
+ if(db.role!=='owner')return alert('Hanya Owner yang dapat mengubah jumlah produk.');
+ const p=db.products.find(x=>String(x.id)===String(id)); if(!p)return alert('Produk tidak ditemukan.');
+ const jumlah=prompt('Ubah jumlah stok produk\nProduk: '+p.name+' - '+(p.color||'')+'\nKode: '+p.code+'\nStok saat ini: '+p.stock+'\n\nMasukkan jumlah stok baru:',String(p.stock));
+ if(jumlah===null)return;
+ const teks=String(jumlah).trim();
+ if(!/^\d+$/.test(teks))return alert('Jumlah stok harus berupa bilangan bulat 0 atau lebih.');
+ const baru=Number(teks); if(!Number.isSafeInteger(baru)||baru<0)return alert('Jumlah stok tidak valid.');
+ const lama=Number(p.stock)||0;
+ if(!confirm('Simpan perubahan stok '+p.name+' dari '+lama+' menjadi '+baru+'?'))return;
+ p.stock=baru;save();produk();
+ alert('Jumlah stok berhasil diperbarui.\nProduk: '+p.name+'\nStok lama: '+lama+'\nStok baru: '+baru);
+}
+function delP(id){
+ if(db.role!=='owner')return alert('Hanya Owner yang dapat menghapus produk.');
+ const p=db.products.find(x=>String(x.id)===String(id));if(!p)return alert('Produk tidak ditemukan.');
+ const stokTerhapus=Number(p.stock)||0;
+ if(confirm('KONFIRMASI HAPUS PRODUK DAN STOK\n\nProduk: '+p.name+' - '+(p.color||'')+'\nKode: '+p.code+'\nStok saat ini: '+stokTerhapus+'\n\nProduk akan dihapus dari daftar produk DAN daftar stok. Produk ini juga dikeluarkan dari keranjang kasir jika sedang dipilih. Riwayat transaksi dan catatan produksi lama tetap disimpan sebagai arsip. Lanjutkan?')){
+   // Stok melekat pada data produk; menghapus produk menghapus stoknya dari tampilan stok juga.
+   db.products=db.products.filter(x=>String(x.id)!==String(id));
+   // Hapus referensi produk dari keranjang agar tidak bisa ikut dijual setelah dihapus.
+   if(Array.isArray(cart))cart=cart.filter(x=>String(x.id)!==String(id));
+   // Bersihkan juga catatan stok terpisah jika ada pada versi data yang lebih baru.
+   if(Array.isArray(db.stocks))db.stocks=db.stocks.filter(x=>String(x.productId??x.product_id??x.id)!==String(id));
+   if(Array.isArray(db.inventory))db.inventory=db.inventory.filter(x=>String(x.productId??x.product_id??x.id)!==String(id));
+   save();produk();
+   if(typeof stok==='function')stok();
+   if(typeof kasir==='function')kasir();
+   alert('Produk dan stoknya berhasil dihapus dari daftar. Stok yang dihapus: '+stokTerhapus+'. Riwayat transaksi lama tetap tersimpan.');
+ }
+} 
+function kasir(){document.getElementById('kasir').innerHTML=`<div class=title>Kasir / Penjualan</div><div class=sub>Pilih barang, jumlah, lalu simpan transaksi.</div><div class=pos><div class=products>${db.products.map(p=>`<div class=product><b>${p.name}</b><br>${p.color}<div class=price>${rp(p.price)}</div>Stok ${p.stock}<button class="btn primary" style="width:100%;margin-top:8px" onclick="add(${p.id})" ${p.stock<1?'disabled':''}>+ Tambah</button></div>`).join('')}</div><div class=cart><h3>Keranjang</h3>${cartView()}</div></div>`}
+function add(id){let c=cart.find(x=>x.id===id),p=db.products.find(x=>x.id===id);if(c){if(c.qty<p.stock)c.qty++}else cart.push({id,qty:1});kasir()}function ch(id,d){let c=cart.find(x=>x.id===id);c.qty+=d;if(c.qty<=0)cart=cart.filter(x=>x.id!==id);kasir()}
+function cartView(){
+  if(!cart.length)return 'Belum ada barang.';
+  let total=cart.reduce((a,c)=>a+db.products.find(p=>p.id===c.id).price*c.qty,0);
+  return cart.map(c=>{
+    let p=db.products.find(x=>x.id===c.id);
+    return `<div class=cartrow>
+      <span>${p.name} - ${p.color}<br>${rp(p.price)} × ${c.qty}</span>
+      <span>
+        <button class="btn light" onclick="ch(${c.id},-1)">−</button>
+        <button class="btn light" onclick="ch(${c.id},1)">+</button>
+      </span>
+    </div>`;
+  }).join('')+
+  `<div class=total><span>Total Belanja</span><span>${rp(total)}</span></div>
+   <div class="paymentbox">
+     <h3 style="margin-top:0">💵 Pembayaran & Kembalian</h3>
+     <div class="payrow">
+       <label>Total Belanja<input id="payTotal" type="text" value="${formatAngka(total)}" readonly style="font-weight:900;color:#071a38;background:#eef3fa;font-size:20px"></label>
+       <label>Uang Diterima
+         <input id="paid" type="text" inputmode="numeric" autocomplete="off" value="${formatAngka(total)}" oninput="formatInputUang(this)" placeholder="Contoh: 100.000" style="font-weight:900;color:#071a38;font-size:20px">
+       </label>
+     </div>
+     <div id="changeBox" class="change-display">
+       <div class="label">KEMBALIAN UNTUK PEMBELI</div>
+       <div id="changeAmount" class="amount">${rp(0)}</div>
+     </div>
+     <button class="btn goldbtn" style="width:100%;margin-top:12px" onclick="checkout()">💳 SIMPAN TRANSAKSI & TAMPILKAN KEMBALIAN</button>
+   </div>
+   <div class="receiptbox">
+     <b>Kasir:</b> ${db.user?.name||'-'}<br>
+     <b>Pembeli membayar:</b> <span id="paidPreview">${rp(total)}</span><br>
+     <b>Kembalian:</b> <span id="changePreview">${rp(0)}</span>
+   </div>`;
+}
+
+function hitungKembalian(){
+  const total=cart.reduce((a,c)=>a+db.products.find(p=>p.id===c.id).price*c.qty,0);
+  const paid=angkaDariInput(document.getElementById('paid'));
+  const change=paid-total;
+  const box=document.getElementById('changeBox');
+  const amount=document.getElementById('changeAmount');
+  const pp=document.getElementById('paidPreview');
+  const cp=document.getElementById('changePreview');
+  if(!box||!amount)return;
+  if(pp)pp.textContent=rp(paid);
+  if(change>=0){
+    box.classList.remove('insufficient');
+    amount.textContent=rp(change);
+    if(cp)cp.textContent=rp(change);
+  }else{
+    box.classList.add('insufficient');
+    amount.textContent='UANG KURANG '+rp(Math.abs(change));
+    if(cp)cp.textContent='Uang kurang '+rp(Math.abs(change));
+  }
+}
+function checkout(){
+  let total=cart.reduce((a,c)=>a+db.products.find(p=>p.id===c.id).price*c.qty,0);
+  let paid=angkaDariInput(document.getElementById('paid'));
+  let change=paid-total;
+  if(!cart.length){alert('Keranjang masih kosong.');return;}
+  if(paid<total){
+    alert('Uang yang diterima kurang '+rp(total-paid)+'. Silakan masukkan jumlah uang yang benar.');
+    hitungKembalian();
+    return;
+  }
+
+  const now=new Date();
+  const invoice='TRX-'+Date.now();
+  const receiptItems=cart.map(c=>{
+    const p=db.products.find(x=>x.id===c.id);
+    return {name:p.name, color:p.color||'', code:p.code||'', price:+p.price||0, qty:c.qty, lineTotal:(+p.price||0)*c.qty};
+  });
+  cart.forEach(c=>{
+    let p=db.products.find(x=>x.id===c.id);
+    p.stock-=c.qty;
+    db.sales.push({
+      invoice:invoice,
+      date:now.toLocaleString('id-ID'),
+      product:p.name+' - '+p.color,
+      productId:p.id,
+      productCode:p.code||'',
+      qty:c.qty,
+      total:p.price*c.qty,
+      hargaModal:+p.cost||0,
+      kasir:db.user.id,
+      uangDiterima:paid,
+      kembalian:change,
+      totalTransaksi:total
+    });
+  });
+  save();
+
+  lastReceipt={
+    store:'GALERI BUSANA',
+    invoice:invoice,
+    date:now.toLocaleString('id-ID'),
+    cashier:db.user?.name||'Siswi',
+    items:receiptItems,
+    total:total,
+    paid:paid,
+    change:change
+  };
+
+  cart=[];
+  kasir();
+  renderReceipt(lastReceipt);
+  alert(
+    'TRANSAKSI BERHASIL\\n\\n'+
+    'Total Belanja : '+rp(total)+'\\n'+
+    'Uang Diterima : '+rp(paid)+'\\n'+
+    'KEMBALIAN     : '+rp(change)+'\\n\\n'+
+    'Bukti pembayaran siap dicetak melalui tombol CETAK STRUK.'
+  );
+}
+
+function renderReceipt(r){
+  if(!r)return;
+  const section=document.getElementById('kasir');
+  if(!section)return;
+  const items=r.items.map((it,i)=>`<tr><td>${i+1}</td><td>${it.name}${it.color?' - '+it.color:''}<br><small>${it.code||''}</small></td><td style="text-align:center">${it.qty}</td><td style="text-align:right">${rp(it.price)}</td><td style="text-align:right">${rp(it.lineTotal)}</td></tr>`).join('');
+  const receipt=document.createElement('div');
+  receipt.id='receiptPrint';
+  receipt.className='receipt-paper';
+  receipt.innerHTML=`
+    <div class="receipt-center" style="font-size:12px;letter-spacing:2px">BUKTI PEMBAYARAN</div>
+    <h2>${r.store}</h2>
+    <div class="receipt-center" style="font-size:12px">Terima kasih telah berbelanja</div>
+    <div class="receipt-line"></div>
+    <div style="display:flex;justify-content:space-between;gap:10px;font-size:12px;flex-wrap:wrap">
+      <span>No. Transaksi: <b>${r.invoice}</b></span><span>${r.date}</span>
+    </div>
+    <div style="font-size:12px;margin-top:5px">Kasir: <b>${r.cashier}</b></div>
+    <div class="receipt-line"></div>
+    <table>
+      <thead><tr><th>No</th><th>Nama Barang</th><th style="text-align:center">Qty</th><th style="text-align:right">Harga</th><th style="text-align:right">Jumlah</th></tr></thead>
+      <tbody>${items}</tbody>
+    </table>
+    <div class="receipt-line"></div>
+    <div class="receipt-total receipt-grand"><span>TOTAL BELANJA</span><span>${rp(r.total)}</span></div>
+    <div class="receipt-total"><span>UANG DITERIMA KASIR</span><b>${rp(r.paid)}</b></div>
+    <div class="receipt-change"><div style="font-size:12px">KEMBALIAN</div><div>${rp(r.change)}</div></div>
+    <div class="receipt-line"></div>
+    <div class="receipt-center" style="font-size:14px;font-weight:bold;margin-top:12px">Terimakasih atas Pembelian semua barang</div>
+    <div class="receipt-center" style="font-size:12px;line-height:1.6;margin-top:6px">Jika Tuan merasa Puas maka beritahu ke Orang Lain, Namun jika Kurang Puas beritahu kami</div>
+    <div class="receipt-actions">
+      <button class="btn primary" onclick="printReceipt()">🖨️ CETAK STRUK (KERTAS LETTER)</button>
+      <button class="btn light" onclick="document.getElementById('receiptPrint')?.remove()">Tutup Struk</button>
+    </div>`;
+  const old=document.getElementById('receiptPrint');
+  if(old)old.remove();
+  section.appendChild(receipt);
+}
+
+function printReceipt(){
+  if(!document.getElementById('receiptPrint')){alert('Belum ada bukti pembayaran untuk dicetak.');return;}
+  document.body.classList.add('receipt-printing');
+  const cleanup=()=>document.body.classList.remove('receipt-printing');
+  window.addEventListener('afterprint',cleanup,{once:true});
+  window.print();
+  setTimeout(cleanup,1500);
+}
+
+function produksi(){document.getElementById('produksi').innerHTML=`<div class=title>Produksi / Gudang</div><div class=sub>Produksi selesai otomatis menambah stok.</div><div class=panel><form class=form onsubmit="addProd(event)"><label>Produk<select name=pid>${db.products.map(p=>`<option value=${p.id}>${p.name} - ${p.color}</option>`).join('')}</select></label><label>Jumlah<input name=qty type=number min=1 value=1></label><label>Status<select name=status><option>Produksi</option><option>Finishing</option><option>QC</option><option>Selesai</option></select></label><button class="btn goldbtn">💾 Simpan</button></form></div><div class=panel style="margin-top:16px"><table><tr><th>Tanggal</th><th>Produk</th><th>Qty</th><th>Status</th></tr>${db.prod.slice().reverse().map(x=>`<tr><td>${x.date}</td><td>${x.product}</td><td>${x.qty}</td><td>${x.status}</td></tr>`).join('')}</table></div>`}
+function addProd(e){e.preventDefault();let f=new FormData(e.target),p=db.products.find(x=>x.id==f.get('pid')),q=+f.get('qty'),s=f.get('status');db.prod.push({date:new Date().toLocaleString('id-ID'),product:p.name+' - '+p.color,qty:q,status:s});if(s==='Selesai')p.stock+=q;save();produksi();alert('Data produksi tersimpan')}
+function stok(){document.getElementById('stok').innerHTML=`<div class=title>Stok</div><div class=sub>Pantau persediaan produk.</div><div class=panel><table><tr><th>Produk</th><th>Warna</th><th>Stok</th><th>Minimum</th><th>Status</th></tr>${db.products.map(p=>`<tr><td>${p.name}</td><td>${p.color}</td><td>${p.stock}</td><td>${p.min}</td><td>${p.stock<=p.min?'⚠️ MENIPIS':'✅ AMAN'}</td></tr>`).join('')}</table></div>`}
+function laporan(){
+ const isOwner=db.role==='owner';
+ const myId=db.user?.id;
+ const rows=(isOwner?db.sales:db.sales.filter(s=>s.kasir===myId)).slice().reverse();
+ const total=rows.reduce((a,x)=>a+(+x.total||0),0);
+ const names={}; db.users.forEach(u=>names[u.id]=u.name);
+ document.getElementById('laporan').innerHTML=`
+ <div class=title>${isOwner?'📈 Laporan Penjualan':'📄 Laporan Penjualan Saya'}</div>
+ <div class=sub>${isOwner?'OWNER dapat melihat seluruh transaksi dan siapa kasir yang melakukan penjualan.':'Laporan ini hanya menampilkan transaksi yang dilakukan oleh akun kasir Anda.'}</div>
+ <div class=reportbox>
+   <div class=reporttools>
+     <label>Dari<input type=date id=repFrom></label>
+     <label>Sampai<input type=date id=repTo></label>
+     ${isOwner?'<label>Kasir<select id=repKasir><option value="">Semua Kasir</option>'+db.users.filter(u=>u.role==='kasir').map(u=>`<option value="${u.id}">${u.name}</option>`).join('')+'</select></label>':''}
+     <button class="btn primary" onclick="tampilLaporan()">🔎 Tampilkan</button>
+     <button class="btn goldbtn" onclick="downloadLaporanExcel()">⬇️ Download Excel</button>
+   </div>
+   <div id=laporanPreview style="margin-top:16px"></div>
+ </div>`;
+ const today=new Date(), iso=new Date(today.getTime()-today.getTimezoneOffset()*60000).toISOString().slice(0,10);
+ document.getElementById('repFrom').value=iso; document.getElementById('repTo').value=iso;
+ tampilLaporan();
+}
+function reportDateISO(value){
+ const raw=String(value||'').trim();
+ if(!raw)return '';
+ let m=raw.match(/^(\d{4})-(\d{2})-(\d{2})/);
+ if(m)return `${m[1]}-${m[2]}-${m[3]}`;
+ m=raw.match(/^(\d{1,2})[\/.-](\d{1,2})[\/.-](\d{4})/);
+ if(m)return `${m[3]}-${String(m[2]).padStart(2,'0')}-${String(m[1]).padStart(2,'0')}`;
+ const parsed=new Date(raw);
+ if(!Number.isNaN(parsed.getTime()))return `${parsed.getFullYear()}-${String(parsed.getMonth()+1).padStart(2,'0')}-${String(parsed.getDate()).padStart(2,'0')}`;
+ return '';
+}
+function filteredReportRows(){
+ const isOwner=db.role==='owner', myId=db.user?.id;
+ const from=document.getElementById('repFrom')?.value||'', to=document.getElementById('repTo')?.value||'';
+ const cashier=isOwner?(document.getElementById('repKasir')?.value||''):myId;
+ return db.sales.filter(s=>{
+   if(!isOwner && s.kasir!==myId)return false;
+   if(cashier && s.kasir!==cashier)return false;
+   const d=reportDateISO(s.date);
+   // Support ISO and legacy Indonesian date strings.
+   if(d){if(from&&d<from)return false;if(to&&d>to)return false;}
+   return true;
+ }).slice().reverse();
+}
+function ringkasanLabaProduk(rows){
+ const groups=new Map();
+ rows.forEach(s=>{
+  const p=s.productId!=null?db.products.find(x=>String(x.id)===String(s.productId)):null;
+  const key=String(s.productId??s.productCode??s.product??'Produk tidak diketahui');
+  if(!groups.has(key))groups.set(key,{code:s.productCode||p?.code||'-',product:s.product||(p?(p.name+' - '+(p.color||'')):'Produk tidak diketahui'),qty:0,omzet:0,modal:0,laba:0,estimasi:false});
+  const g=groups.get(key),qty=Number(s.qty)||0,omzet=Number(s.total)||0;
+  let unitCost=null;
+  if(s.hargaModal!==undefined&&s.hargaModal!==null&&s.hargaModal!=='')unitCost=Number(s.hargaModal)||0;
+  else if(p&&p.cost!==undefined){unitCost=Number(p.cost)||0;g.estimasi=true;}
+  else g.estimasi=true;
+  g.qty+=qty;g.omzet+=omzet;
+  if(unitCost===null){g.modal=null;g.laba=null;}
+  else if(g.modal!==null){g.modal+=unitCost*qty;g.laba+=omzet-unitCost*qty;}
+ });
+ return [...groups.values()].sort((a,b)=>a.product.localeCompare(b.product,'id'));
+}
+function tampilLaporan(){
+ const rows=filteredReportRows(), names={}; db.users.forEach(u=>names[u.id]=u.name);
+ const total=rows.reduce((a,x)=>a+(+x.total||0),0);
+ const isOwner=db.role==='owner';
+ const labaProduk=isOwner?ringkasanLabaProduk(rows):[];
+ const body=rows.map((s,i)=>`<tr><td>${i+1}</td><td>${s.invoice}</td><td>${s.date}</td><td>${names[s.kasir]||s.kasir||'-'}</td><td>${s.product}</td><td>${s.qty}</td><td>${rp(s.total)}</td>${isOwner?`<td><button class="btn danger" onclick="hapusTransaksi('${s.invoice}')">🗑️ Hapus Transaksi</button></td>`:''}</tr>`).join('');
+ const from=document.getElementById('repFrom')?.value||'-', to=document.getElementById('repTo')?.value||'-';
+ const cashierSelect=document.getElementById('repKasir');
+ const cashierLabel=db.role==='owner'?(cashierSelect?.value?(cashierSelect.options[cashierSelect.selectedIndex]?.text||'Kasir terpilih'):'Semua Kasir'):(db.user?.name||'Kasir');
+ document.getElementById('laporanPreview').innerHTML=`<div class=panel style="margin-bottom:12px"><b>Periode:</b> ${from} s/d ${to} &nbsp; | &nbsp; <b>Kasir:</b> ${cashierLabel} &nbsp; | &nbsp; <b>Jumlah baris penjualan:</b> ${rows.length}</div><table><tr><th>No</th><th>No. Transaksi</th><th>Tanggal</th><th>Nama Kasir</th><th>Barang Terjual</th><th>Jumlah</th><th>Total</th>${isOwner?'<th>Aksi</th>':''}</tr>${body||`<tr><td colspan=${isOwner?8:7} style="text-align:center">Belum ada transaksi pada periode tersebut.</td></tr>`}</table><div class=total style="margin-top:15px"><span>Total Omzet Penjualan</span><span>${rp(total)}</span></div>${isOwner?`<div class=panel style="margin-top:18px"><h3>📊 Omzet dan Keuntungan per Item Produk</h3><p style="font-size:12px;color:#687080">Keuntungan = omzet dikurangi harga modal × jumlah terjual. Untuk transaksi lama yang tidak menyimpan harga modal, sistem menggunakan harga modal produk saat ini jika produk masih terdaftar; hasilnya merupakan estimasi.</p><table><tr><th>Kode</th><th>Produk</th><th>Qty Terjual</th><th>Omzet</th><th>Total Modal</th><th>Keuntungan</th></tr>${labaProduk.map(g=>`<tr><td>${g.code}</td><td>${g.product}</td><td>${g.qty}</td><td>${rp(g.omzet)}</td><td>${g.modal===null?'Tidak tersedia':rp(g.modal)}</td><td>${g.laba===null?'Tidak tersedia':rp(g.laba)}</td></tr>`).join('')||'<tr><td colspan="6">Belum ada penjualan pada periode tersebut.</td></tr>'}<tr><th colspan="2">TOTAL</th><th>${labaProduk.reduce((a,g)=>a+g.qty,0)}</th><th>${rp(labaProduk.reduce((a,g)=>a+g.omzet,0))}</th><th>${labaProduk.some(g=>g.modal===null)?'Sebagian tidak tersedia':rp(labaProduk.reduce((a,g)=>a+g.modal,0))}</th><th>${labaProduk.some(g=>g.laba===null)?'Sebagian tidak tersedia':rp(labaProduk.reduce((a,g)=>a+g.laba,0))}</th></tr></table></div>`:''}${isOwner?'<p style="font-size:12px;color:#687080">Menghapus transaksi akan menghapus seluruh rincian dengan nomor transaksi yang sama. Stok akan dikembalikan untuk produk yang masih terdaftar.</p>':''}<div class=sign>
+  <div>Mengetahui,</div>
+  <div><b>OWNER GALERI BUSANA</b></div>
+  <div>Nama Owner: <b>${(db.users.find(u=>u.role==='owner')||{}).name||'Yulita Eka Amalia'}</b></div>
+  <div class=signspace></div>
+  <div><b>____________________________</b></div>
+  <div>Tanda Tangan Owner</div>
+  <br>
+  <div>Dibuat oleh Kasir:</div>
+  <div>Nama Kasir: <b>${db.role==='kasir'?(db.user?.name||'-'):'-'}</b></div>
+  <div class=signspace></div>
+  <div><b>____________________________</b></div>
+  <div>Tanda Tangan Kasir</div>
+  <div style="margin-top:12px">Tanggal/Jam Update: <b>${new Date().toLocaleString('id-ID')}</b></div>
+</div>`;
+}
+function hapusTransaksi(invoice){
+ if(db.role!=='owner')return alert('Hanya Owner yang dapat menghapus transaksi.');
+ const lines=db.sales.filter(s=>String(s.invoice)===String(invoice));
+ if(!lines.length)return alert('Transaksi tidak ditemukan.');
+ const total=lines.reduce((sum,s)=>sum+(Number(s.total)||0),0);
+ const first=lines[0];
+ const cashier=(db.users.find(u=>u.id===first.kasir)||{}).name||first.kasir||'-';
+ const summary=lines.map(s=>'• '+s.product+' × '+s.qty+' = '+rp(s.total)).join('\n');
+ const ok=confirm('KONFIRMASI HAPUS TRANSAKSI\n\nNo. Transaksi: '+invoice+'\nTanggal: '+first.date+'\nKasir: '+cashier+'\n\n'+summary+'\n\nTotal: '+rp(total)+'\n\nSemua rincian transaksi ini akan dihapus dari laporan dan omzet. Stok akan dikembalikan untuk produk yang masih terdaftar. Tindakan ini tidak dapat dibatalkan. Lanjutkan?');
+ if(!ok)return;
+ // Kembalikan stok hanya untuk produk yang masih ada. Product ID digunakan untuk transaksi baru;
+ // transaksi lama dicocokkan berdasarkan nama dan warna yang tersimpan di catatan penjualan.
+ lines.forEach(s=>{
+   let p=s.productId!=null?db.products.find(x=>String(x.id)===String(s.productId)):null;
+   if(!p){
+     const key=String(s.product||'').trim();
+     p=db.products.find(x=>(String(x.name||'')+' - '+String(x.color||'')).trim()===key);
+   }
+   if(p)p.stock=(Number(p.stock)||0)+(Number(s.qty)||0);
+ });
+ db.sales=db.sales.filter(s=>String(s.invoice)!==String(invoice));
+ save();
+ tampilLaporan();
+ alert('Transaksi '+invoice+' berhasil dihapus. Rincian transaksi telah dihapus dari laporan dan omzet diperbarui. Stok produk yang masih terdaftar telah dikembalikan.');
+}
+
+function downloadLaporanExcel(){
+  if(typeof XLSX==='undefined'){alert('Fitur Excel memerlukan koneksi internet saat membuka aplikasi.');return;}
+  const rows=filteredReportRows(), names={}; db.users.forEach(u=>names[u.id]=u.name);
+  const total=rows.reduce((a,x)=>a+(+x.total||0),0);
+
+  const ownerUser=db.users.find(u=>u.role==='owner') || {};
+  const ownerName=ownerUser.name || 'Yulita Eka Amalia';
+
+  const cashierIds=[...new Set(rows.map(x=>x.kasir).filter(Boolean))];
+  let cashierName='-';
+  if(db.role==='kasir'){
+    cashierName=db.user?.name || names[db.user?.id] || '-';
+  }else if(cashierIds.length===1){
+    cashierName=names[cashierIds[0]] || cashierIds[0] || '-';
+  }else if(cashierIds.length>1){
+    cashierName='Beberapa Kasir';
+  }else{
+    cashierName='-';
+  }
+
+  const now=new Date();
+  const pad=n=>String(n).padStart(2,'0');
+  const updatedAt=`${pad(now.getDate())}/${pad(now.getMonth()+1)}/${now.getFullYear()} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+  const from=document.getElementById('repFrom')?.value||'-';
+  const to=document.getElementById('repTo')?.value||'-';
+
+  // Format Excel khusus KASIR dipertahankan seperti sebelumnya.
+  if(db.role==='kasir'){
+    const dataKasir=[
+      ['LAPORAN PENJUALAN GALERI BUSANA'],
+      ['Periode:',from,'s/d',to,'Kasir:',cashierName],
+      ['Tanggal & Jam Update:',updatedAt],
+      [],
+      ['No','No. Transaksi','Tanggal','Nama Kasir','Barang Terjual','Harga Satuan','Jumlah (Satuan)','Total Harga per Item']
+    ];
+    rows.forEach((s,i)=>{
+      const qty=Number(s.qty)||0, itemTotal=Number(s.total)||0;
+      dataKasir.push([i+1,s.invoice,s.date,names[s.kasir]||s.kasir||'-',s.product,qty>0?itemTotal/qty:0,qty,itemTotal]);
+    });
+    dataKasir.push([]);
+    const totalRow=dataKasir.length;
+    dataKasir.push(['Total Omzet Penjualan','','','','','','',total]);
+    dataKasir.push([],[],['','','Mengetahui,'],['','','OWNER GALERI BUSANA'],
+      ['','','Nama Owner: '+ownerName],[],['','','Tanda Tangan Owner:'],[],[],
+      ['','','____________________________'],[],['','','Dibuat oleh Kasir:'],
+      ['','','Nama Kasir: '+cashierName],[],['','','Tanda Tangan Kasir:'],[],[],
+      ['','','____________________________'],['','','Tanggal/Jam Update: '+updatedAt]);
+    const wsKasir=XLSX.utils.aoa_to_sheet(dataKasir);
+    wsKasir['!cols']=[{wch:7},{wch:24},{wch:24},{wch:24},{wch:42},{wch:18},{wch:16},{wch:22}];
+    wsKasir['!merges']=[
+      {s:{r:0,c:0},e:{r:0,c:11}},
+      {s:{r:totalRow,c:0},e:{r:totalRow,c:6}}
+    ];
+    rows.forEach((s,i)=>{
+      const unit=wsKasir[XLSX.utils.encode_cell({r:5+i,c:5})]; if(unit)unit.z='"Rp" #,##0';
+      const item=wsKasir[XLSX.utils.encode_cell({r:5+i,c:7})]; if(item)item.z='"Rp" #,##0';
+    });
+    const grand=wsKasir[XLSX.utils.encode_cell({r:totalRow,c:7})];
+    if(grand)grand.z='"Rp" #,##0';
+    const wbKasir=XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wbKasir,wsKasir,'Laporan Penjualan');
+    XLSX.writeFile(wbKasir,'Laporan_Kasir_GALERI_BUSANA_'+from+'_sd_'+to+'.xlsx');
+    return;
+  }
+
+  const data=[
+    ['LAPORAN PENJUALAN DAN KEUNTUNGAN GALERI BUSANA'],
+    ['Periode Laporan',from,'s/d',to],
+    ['Tanggal & Jam Pembuatan/Update',updatedAt],
+    [],
+    ['No','No. Transaksi','Tanggal','Nama Kasir','Nama Barang','Harga Satuan','Harga Modal','Harga Jual','Keuntungan per Unit','Jumlah (Satuan)','Total Harga per Item','Total Keuntungan per Item Produk']
+  ];
+
+  rows.forEach((s,i)=>{
+    const qty=Number(s.qty)||0, itemTotal=Number(s.total)||0;
+    const unitSell=qty>0?itemTotal/qty:0;
+    const product=s.productId!=null?db.products.find(p=>String(p.id)===String(s.productId)):null;
+    const unitCost=(s.hargaModal!==undefined&&s.hargaModal!==null&&s.hargaModal!=='')?Number(s.hargaModal):(product?Number(product.cost)||0:null);
+    const unitProfit=unitCost===null?null:unitSell-unitCost;
+    const totalProfit=unitProfit===null?null:unitProfit*qty;
+    data.push([
+      i+1,s.invoice,s.date,names[s.kasir]||s.kasir||'-',s.product,
+      unitSell,unitCost===null?'':unitCost,unitSell,unitProfit===null?'':unitProfit,
+      qty,itemTotal,totalProfit===null?'':totalProfit
+    ]);
+  });
+
+  // Tampilkan jumlah seluruh item penjualan untuk Owner maupun Kasir,
+  // langsung setelah rincian transaksi pada sheet laporan yang sama.
+  data.push([]);
+  const ownerUnitProfit=rows.reduce((sum,s)=>{
+    const qty=Number(s.qty)||0, itemTotal=Number(s.total)||0;
+    const product=s.productId!=null?db.products.find(p=>String(p.id)===String(s.productId)):null;
+    const unitCost=(s.hargaModal!==undefined&&s.hargaModal!==null&&s.hargaModal!=='')?Number(s.hargaModal):(product?Number(product.cost)||0:null);
+    return sum+(unitCost===null?0:itemTotal-(unitCost*qty));
+  },0);
+  data.push(['','','','','TOTAL SELURUH PENJUALAN','','','','',rows.reduce((sum,s)=>sum+(Number(s.qty)||0),0),total,ownerUnitProfit]);
+  data.push([]);
+  data.push([]);
+  data.push(['','','Mengetahui,','','','','']);
+  data.push(['','','OWNER GALERI BUSANA','','','','']);
+  data.push(['','','Nama Owner: '+ownerName,'','','','']);
+  data.push([]);
+  data.push(['','','Tanda Tangan Owner:','','','','']);
+  data.push(['','','','','','','']);
+  data.push(['','','','','','','']);
+  data.push(['','','____________________________','','','','']);
+  data.push([]);
+  data.push(['','','Dibuat oleh Kasir:','','','','']);
+  data.push(['','','Nama Kasir: '+cashierName,'','','','']);
+  data.push([]);
+  data.push(['','','Tanda Tangan Kasir:','','','','']);
+  data.push(['','','','','','','']);
+  data.push(['','','','','','','']);
+  data.push(['','','____________________________','','','','']);
+  data.push([]);
+  data.push(['','','Tanggal Pembuatan/Update: '+updatedAt,'','','','']);
+
+  // Untuk akun kasir, tambahkan rekap total penjualan per tanggal di bagian paling bawah
+  // lembar Excel yang sama (tidak membuat sheet tambahan).
+  if(db.role==='kasir'){
+    const dailyTotals=new Map();
+    rows.forEach(s=>{
+      const iso=reportDateISO(s.date);
+      const key=iso||String(s.date||'Tanggal tidak diketahui');
+      dailyTotals.set(key,(dailyTotals.get(key)||0)+(Number(s.total)||0));
+    });
+    data.push([]);
+    data.push(['REKAP TOTAL PENJUALAN PER HARI']);
+    data.push(['Tanggal','Total Penjualan']);
+    [...dailyTotals.entries()].sort((a,b)=>String(a[0]).localeCompare(String(b[0]))).forEach(([key,amount])=>{
+      let label=key;
+      if(/^\d{4}-\d{2}-\d{2}$/.test(key)){
+        const [y,m,d]=key.split('-'); label=`${d}/${m}/${y}`;
+      }
+      data.push([label,amount]);
+    });
+  }
+
+  const ws=XLSX.utils.aoa_to_sheet(data);
+  ws['!cols']=[
+    {wch:7},{wch:22},{wch:22},{wch:25},{wch:35},{wch:18},
+    {wch:18},{wch:18},{wch:20},{wch:16},{wch:22},{wch:28}
+  ];
+
+  // Merge title and signature headings for a cleaner printable Excel report.
+  ws['!merges']=[
+    {s:{r:0,c:0},e:{r:0,c:7}},
+    {s:{r:7,c:2},e:{r:7,c:7}},
+    {s:{r:8,c:2},e:{r:8,c:7}},
+    {s:{r:9,c:2},e:{r:9,c:7}},
+    {s:{r:11,c:2},e:{r:11,c:7}},
+    {s:{r:15,c:2},e:{r:15,c:7}},
+    {s:{r:16,c:2},e:{r:16,c:7}},
+    {s:{r:18,c:2},e:{r:18,c:7}},
+    {s:{r:19,c:2},e:{r:19,c:7}},
+    {s:{r:21,c:2},e:{r:21,c:7}}
+  ];
+  if(db.role==='kasir'){
+    const titleRow=data.findIndex(r=>r[0]==='REKAP TOTAL PENJUALAN PER HARI');
+    if(titleRow>=0)ws['!merges'].push({s:{r:titleRow,c:0},e:{r:titleRow,c:1}});
+  }
+
+  // Format rupiah untuk kolom harga, modal, keuntungan, dan total.
+  rows.forEach((s,i)=>{
+    [5,6,7,8,10,11].forEach(c=>{
+      const cell=ws[XLSX.utils.encode_cell({r:5+i,c})];
+      if(cell&&typeof cell.v==='number')cell.z='"Rp" #,##0;[Red]-"Rp" #,##0';
+    });
+  });
+  [10,11].forEach(c=>{
+    const cell=ws[XLSX.utils.encode_cell({r:7+rows.length+1,c})];
+    if(cell&&typeof cell.v==='number')cell.z='"Rp" #,##0;[Red]-"Rp" #,##0';
+  });
+  const wb=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,ws,'Laporan Penjualan');
+
+  if(db.role==='owner'){
+    const summary=ringkasanLabaProduk(rows);
+    const summaryData=[
+      ['LAPORAN OMZET DAN KEUNTUNGAN PER ITEM PRODUK - GALERI BUSANA'],
+      ['Periode',from,'s/d',to],
+      ['Kasir',document.getElementById('repKasir')?.value ? (document.getElementById('repKasir').selectedOptions[0]?.text||'-') : 'Semua Kasir'],
+      ['Tanggal & Jam Pembuatan/Update',updatedAt],
+      [],
+      ['Kode Produk','Nama Produk','Jumlah Terjual','Harga Satuan','Harga Modal per Unit','Harga Jual per Unit','Keuntungan per Unit','Omzet Penjualan','Total Modal','Total Keuntungan per Item Produk','Keterangan']
+    ];
+    summary.forEach(g=>{
+      const qty=Number(g.qty)||0;
+      const unitSell=qty>0?g.omzet/qty:0;
+      const unitCost=qty>0&&g.modal!==null?g.modal/qty:null;
+      const unitProfit=unitCost===null?null:unitSell-unitCost;
+      summaryData.push([
+        g.code,g.product,qty,unitSell,unitCost===null?'':unitCost,unitSell,
+        unitProfit===null?'':unitProfit,g.omzet,g.modal===null?'':g.modal,g.laba===null?'':g.laba,
+        g.modal===null?'Harga modal tidak tersedia':g.estimasi?'Estimasi modal produk saat ini':'Harga modal saat transaksi'
+      ]);
+    });
+    summaryData.push([]);
+    summaryData.push(['TOTAL','',summary.reduce((a,g)=>a+g.qty,0),'','','','',
+      summary.reduce((a,g)=>a+g.omzet,0),
+      summary.some(g=>g.modal===null)?'':summary.reduce((a,g)=>a+g.modal,0),
+      summary.some(g=>g.laba===null)?'':summary.reduce((a,g)=>a+g.laba,0),'']);
+    const sws=XLSX.utils.aoa_to_sheet(summaryData);
+    sws['!cols']=[{wch:18},{wch:35},{wch:16},{wch:18},{wch:20},{wch:18},{wch:20},{wch:22},{wch:22},{wch:30},{wch:35}];
+    sws['!merges']=[{s:{r:0,c:0},e:{r:0,c:10}}];
+    summary.forEach((g,i)=>{
+      [3,4,5,6,7,8,9].forEach(c=>{
+        const cell=sws[XLSX.utils.encode_cell({r:5+i,c})];
+        if(cell&&typeof cell.v==='number')cell.z='"Rp" #,##0;[Red]-"Rp" #,##0';
+      });
+    });
+    XLSX.utils.book_append_sheet(wb,sws,'Omzet & Laba Produk');
+  }
+
+  const dt=now.toISOString().slice(0,10);
+  XLSX.writeFile(wb,'Laporan_Penjualan_GALERI_BUSANA_'+dt+'.xlsx');
+}
+</script></body></html>
+
+<script>
+(function(){
+ if(db && db.user && ['owner','kasir','gudang'].includes(db.user.role)){
+   db.role=db.user.role;
+   document.getElementById('login').style.display='none';
+   document.getElementById('app').style.display='block';
+   document.getElementById('role').textContent=db.user.name+' • '+db.user.role.toUpperCase();
+   nav(); go('dashboard');
+ }
+})();
+</script>
